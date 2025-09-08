@@ -1,5 +1,6 @@
 ﻿using Grocery.Core.Interfaces.Repositories;
 using Grocery.Core.Models;
+using System.Linq;
 
 namespace Grocery.Core.Data.Repositories
 {
@@ -18,10 +19,8 @@ namespace Grocery.Core.Data.Repositories
             ];
         }
 
-        public List<GroceryListItem> GetAll()
-        {
-            return groceryListItems;
-        }
+        public List<GroceryListItem> GetAll() => groceryListItems;
+        
 
         public List<GroceryListItem> GetAllOnGroceryListId(int id)
         {
@@ -33,12 +32,15 @@ namespace Grocery.Core.Data.Repositories
             int newId = groceryListItems.Max(g => g.Id) + 1;
             item.Id = newId;
             groceryListItems.Add(item);
-            return Get(item.Id);
+            return Get(item.Id) ?? throw new InvalidOperationException();
         }
 
-        public GroceryListItem? Delete(GroceryListItem item)
-        {
-            throw new NotImplementedException();
+        public GroceryListItem? Delete(GroceryListItem item) {
+            if (!groceryListItems.Contains(item)) throw new InvalidOperationException();
+            GroceryListItem delItem = groceryListItems.FirstOrDefault(i => i.Id == item.Id) ?? throw new InvalidOperationException();
+
+            bool delSucces = groceryListItems.Remove(delItem);
+            return delSucces ? delItem : null;
         }
 
         public GroceryListItem? Get(int id)
@@ -48,7 +50,16 @@ namespace Grocery.Core.Data.Repositories
 
         public GroceryListItem? Update(GroceryListItem item)
         {
-            throw new NotImplementedException();
+            GroceryListItem? listItem = groceryListItems.FirstOrDefault(p => p.Id == item.Id);
+            if (listItem == null) return null;
+
+            listItem = new GroceryListItem(
+                item.Id, 
+                item.GroceryListId, 
+                item.ProductId, 
+                item.Amount);
+
+            return listItem;
         }
     }
 }

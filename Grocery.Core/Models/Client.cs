@@ -10,5 +10,9 @@ namespace Grocery.Core.Models
             _emailAddress=emailAddress;
             _password=password;
         }
+        public string emailAddress {
+            get => _emailAddress;
+            set => _emailAddress = value;
+        }
     }
 }

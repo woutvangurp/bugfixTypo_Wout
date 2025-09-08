@@ -17,15 +17,10 @@ namespace Grocery.Core.Data.Repositories
             ];
         }
 
-        public Client? Get(string email)
-        {
-            return clientList[0];
-        }
-
-        public Client? Get(int id)
-        {
-            return clientList[0];
-        }
+        public Client? getByMail(string email) => clientList.FirstOrDefault(c => c.emailAddress == email);
+        public Client? getById(int id) => clientList.FirstOrDefault(c => c.Id == id);
+        public Client? Get(string email) => clientList[0];
+        public Client? Get(int id) => clientList[0];
 
         public List<Client> GetAll()
         {
